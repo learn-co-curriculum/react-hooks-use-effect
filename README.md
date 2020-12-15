@@ -90,7 +90,7 @@ component is rendered.
 > By using this Hook, you tell React that your component needs to do something
 > after render. React will remember the function you passed (we’ll refer to it
 > as our “effect”), and call it later after performing the DOM updates. --
-> [useEffect hook][useeffect-hook]
+> [React docs on the useEffect hook][use-effect-hook]
 
 Let's add some state into the equation, and see how that interacts with our
 `useEffect` hook.
@@ -130,10 +130,13 @@ messages in the same order:
 - useEffect called
 
 **By default, `useEffect` will run our side effect function every time the
-component re-renders**. However, sometimes we only want to run our side effect
-once. For example -- imagine we're using the `useEffect` hook to fetch some data
-from an external API (a common use case for `useEffect`). How can we control
-when `useEffect` will run our side effect function?
+component re-renders**.
+
+However, sometimes we only want to run our side effect once. For example:
+imagine we're using the `useEffect` hook to fetch some data from an external API
+(a common use case for `useEffect`). We don't want to make a network request
+every time our component is updated, only the first time our component renders.
+How can we control when `useEffect` will run our side effect function?
 
 ## useEffect Dependencies
 
@@ -164,7 +167,7 @@ useEffect(() => {
 ```
 
 Now, the side effect will only run the _first time_ our component renders! Keep
-this trick in mind -- we'll be using it again soon to work with fetching data.
+this trick in mind. We'll be using it again soon to work with fetching data.
 
 ## Performing Side Effects
 
@@ -249,6 +252,78 @@ by changing the dependencies array. It's also a good idea to add some console
 messages or put in a debugger to see what exactly when the side effects will
 run.
 
+## useEffect Cleanup
+
+When using the `useEffect` hook in a component, you might end up with some
+long-running code that you no longer need once the component is removed from
+the page. Here's an example of a component that runs a timer in the background
+continuously:
+
+```js
+function Clock() {
+  const [time, setTime] = useState(new Date());
+
+  useEffect(() => {
+    setInterval(() => {
+      setTime(new Date());
+    }, 1000);
+  }, []);
+
+  return <div>{time}</div>;
+}
+```
+
+When the component first renders, the `useEffect` hook will run and create an
+interval. That interval will run every 1 second in the background, and set the
+time.
+
+We could use this Clock component like so:
+
+```js
+function App() {
+  const [showClock, setShowClock] = useState(true);
+
+  return (
+    <div>
+      {showClock ? <Clock /> : null}
+      <button onClick={() => setShowClock(false)}>Hide Clock</button>
+    </div>
+  );
+}
+```
+
+When the button is clicked, we want to hide the clock. That _also_ means
+we should stop the `setInterval` from running in the background. We need
+some way of cleaning up our side effect when the component is no longer
+needed!
+
+React's solution is to have our `useEffect` function _return_ a cleanup
+function, which will run after the component "un-mounts": when it is
+remove from the DOM. Here's how the cleanup function would look:
+
+```js
+function Clock() {
+  const [time, setTime] = useState(new Date());
+
+  useEffect(() => {
+    const timerID = setInterval(() => {
+      setTime(new Date());
+    }, 1000);
+
+    // returning a cleanup function
+    return function () {
+      clearInterval(timerID);
+    };
+  }, []);
+
+  return <div>{time}</div>;
+}
+```
+
+Cleanup functions like this are useful if you have a long-running function, such
+as a timer, or a subscription to a web socket, that you want to unsubscribe from
+when the component is no longer on the page.
+
 ## Conclusion
 
 So far, we've been working with components solely for rendering to the DOM based
@@ -262,8 +337,8 @@ practice handling network requests from our components.
 
 ## Resources
 
-- [React Docs on useEffect][useeffect-hook]
+- [React Docs on useEffect][use-effect-hook]
 - [A Complete Guide to useEffect](https://overreacted.io/a-complete-guide-to-useeffect/)
 
 [side-effects]: https://en.wikipedia.org/wiki/Side_effect_(computer_science)#:~:text=In%20computer%20science%2C%20an%20operation,the%20invoker%20of%20the%20operation.
-[useeffect-hook]: https://reactjs.org/docs/hooks-effect.html
+[use-effect-hook]: https://reactjs.org/docs/hooks-effect.html
