@@ -12,11 +12,24 @@ beyond just returning JSX elements.
 2. Use the `useEffect` hook to write side effects in components
 3. Control when the side effects run by using a dependencies array with `useEffect`
 
+## Reviewing What We Know
+
+Here's a quick recap of some of the key concepts we've learned about React
+components:
+
+- A **component** is a function that takes in **props** and returns **JSX**
+- When we call `ReactDOM.render` and pass in our components, it will **render**
+  all of our components by calling the our component functions, passing down
+  props, and building the DOM elements out of our components' JSX
+- When a component's **state** is updated by calling the `setState` function,
+  that component will **re-render**, along with all of its children
+
 ## Side Effects
 
 When you hear about side effects in terms of pharmaceuticals, they're often not
 something to get too excited about (typically, you'd take some aspirin for its
-_main effect_ of making a headache go away instead of its _side effect_ of nausea).
+_main effect_ of making a headache go away instead of its _side effect_ of
+nausea).
 
 In terms of _programming_, a side effect is defined as:
 
@@ -323,6 +336,18 @@ function Clock() {
 Cleanup functions like this are useful if you have a long-running function, such
 as a timer, or a subscription to a web socket, that you want to unsubscribe from
 when the component is no longer on the page.
+
+## useEffect Dependencies Cheatsheet
+
+For a quick rule of thumb, here's how to use the second argument of `useEffect` to control when your side effect code will run:
+
+- `useEffect(() => {})`: No dependencies array
+  - Run the side effect **every time our component renders** (whenever state or
+    props change)
+- `useEffect(() => {}, [])`: Empty dependencies array
+  - Run the side effect **only the first time our component renders**
+- `useEffect(() => {}, [variable1, variable2])`: Dependencies array with elements in it
+  - Run the side effect **any time the variable(s) change**
 
 ## Conclusion
 
