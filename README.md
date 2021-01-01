@@ -26,30 +26,25 @@ components:
 
 ## Side Effects
 
-When you hear about side effects in terms of pharmaceuticals, they're often not
-something to get too excited about (typically, you'd take some aspirin for its
-_main effect_ of making a headache go away instead of its _side effect_ of
-nausea).
-
-In terms of _programming_, a side effect is defined as:
+In programming terms, a side effect is defined as:
 
 > an operation, function or expression is said to have a side effect if it
 > modifies some state variable value(s) outside its local environment, that is
 > to say has an observable effect besides returning a value (the main effect) to
-> the invoker of the operation. -- [Wikipedia on Side Effects][side-effects]
+> the invoker of the operation. &mdash; [Wikipedia on Side Effects][side-effects]
 
 Put more simply, if we call a function and that function causes change in our
 application _outside of the function itself_, it's considered to have caused a
-_side effect_. Things like making _network requests_, accessing data from a
+**side effect**. Things like making network requests, accessing data from a
 database, writing to the file system, etc. are common examples of side effects
 in programming.
 
-In terms of a React component, the _main effect_ of the component is to return
+In terms of a React component, the **main effect** of the component is to return
 some JSX. That's been true of all of the components we've been working with! One
 of the first rules we learned about function components is that they take in
 props, and return JSX.
 
-_However_, it's often necessary for a component to perform some _side effects_
+_However_, it's often necessary for a component to perform some **side effects**
 in addition to its main job of returning JSX. For example, we might want to:
 
 - Fetch some data from an API when a component loads
@@ -69,7 +64,7 @@ import React, { useEffect } from "react";
 ```
 
 Then, inside our component, we call `useEffect` and pass in a callback function
-to run as a _side effect_:
+to run as a **side effect**:
 
 ```js
 function App() {
@@ -97,13 +92,12 @@ order:
 - Component rendering
 - useEffect called
 
-So we are now able to run some extra code as a _side effect_ any time our
+So we are now able to run some extra code as a **side effect** any time our
 component is rendered.
 
 > By using this Hook, you tell React that your component needs to do something
 > after render. React will remember the function you passed (we’ll refer to it
-> as our “effect”), and call it later after performing the DOM updates. --
-> [React docs on the useEffect hook][use-effect-hook]
+> as our “effect”), and call it later after performing the DOM updates. &mdash; > [React docs on the useEffect hook][use-effect-hook]
 
 Let's add some state into the equation, and see how that interacts with our
 `useEffect` hook.
@@ -154,7 +148,7 @@ How can we control when `useEffect` will run our side effect function?
 ## useEffect Dependencies
 
 React gives us a way to control when the side effect will run, by passing a
-second argument to `useEffect` of a _dependencies array_. It looks like this:
+second argument to `useEffect` of a **dependencies array**. It looks like this:
 
 ```js
 useEffect(
@@ -167,8 +161,8 @@ useEffect(
 
 Update the `useEffect` function as above and try running the code again. Now,
 the side effect will only run when the `count` variable changes. We won't see
-any console messages from `useEffect` when typing in the input -- we'll only see
-them when clicking the button!
+any console messages from `useEffect` when typing in the input &mdash; we'll
+only see them when clicking the button!
 
 We can also pass in an _empty_ array of dependencies as a second argument, like
 this:
@@ -190,10 +184,10 @@ couple other examples.
 One kind of side effect we can demonstrate here is _updating parts of the
 webpage page outside of the React DOM tree_. React is responsible for all the
 DOM elements rendered by our components, but there are some parts of the webpage
-that live outside of this tree. Take, for instance, the `<title>` of our page --
-this is what shows up in the browser tab, like this:
+that live outside of this tree. Take, for instance, the `<title>` of our page
+&mdash; this is what shows up in the browser tab, like this:
 
-![title](images/title.png)
+![title](https://raw.githubusercontent.com/learn-co-curriculum/react-hooks-use-effect/master/images/title.png)
 
 Updating this part of the page would be considered a _side effect_, so let's use
 `useEffect` to update it!
@@ -206,7 +200,7 @@ useEffect(() => {
 
 Here, what we're telling React is:
 
-"Hey React! When my App component renders, I also want you to update the
+"Hey React! When my component renders, I _also_ want you to update the
 document's title. But you should only do that when the `text` variable changes."
 
 Let's add another side effect, this time running a `setTimeout` function. We
@@ -262,8 +256,20 @@ function App() {
 
 Explore this code to familiarize yourself with `useEffect`, and see what changes
 by changing the dependencies array. It's also a good idea to add some console
-messages or put in a debugger to see what exactly when the side effects will
-run.
+messages or put in a debugger to see exactly when the side effects will run.
+
+## useEffect Dependencies Cheatsheet
+
+Here's a quick guide on how to use the second argument of `useEffect` to control
+when your side effect code will run:
+
+- `useEffect(() => {})`: No dependencies array
+  - Run the side effect **every time our component renders** (whenever state or
+    props change)
+- `useEffect(() => {}, [])`: Empty dependencies array
+  - Run the side effect **only the first time our component renders**
+- `useEffect(() => {}, [variable1, variable2])`: Dependencies array with elements in it
+  - Run the side effect **any time the variable(s) change**
 
 ## useEffect Cleanup
 
@@ -282,7 +288,7 @@ function Clock() {
     }, 1000);
   }, []);
 
-  return <div>{time}</div>;
+  return <div>{time.toString()}</div>;
 }
 ```
 
@@ -308,11 +314,23 @@ function App() {
 When the button is clicked, we want to hide the clock. That _also_ means
 we should stop the `setInterval` from running in the background. We need
 some way of cleaning up our side effect when the component is no longer
-needed!
+needed! To demonstrate the issue, try clicking the "Hide Clock" button &mdash;
+you'll likely see a warning message like this:
 
-React's solution is to have our `useEffect` function _return_ a cleanup
-function, which will run after the component "un-mounts": when it is
-remove from the DOM. Here's how the cleanup function would look:
+```txt
+index.js:1 Warning: Can't perform a React state update on an unmounted
+component. This is a no-op, but it indicates a memory leak in your application.
+To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup
+function.
+```
+
+The reason for this message is that even after removing our `Clock` component
+from the DOM, the `setInterval` function we called in `useEffect` is still
+running in the background, and updating state every second.
+
+React's solution is to have our `useEffect` function **return a cleanup
+function**, which will run after the component "un-mounts": when it is removed
+from the DOM. Here's how the cleanup function would look:
 
 ```js
 function Clock() {
@@ -329,7 +347,7 @@ function Clock() {
     };
   }, []);
 
-  return <div>{time}</div>;
+  return <div>{time.toString()}</div>;
 }
 ```
 
@@ -337,23 +355,11 @@ Cleanup functions like this are useful if you have a long-running function, such
 as a timer, or a subscription to a web socket, that you want to unsubscribe from
 when the component is no longer on the page.
 
-## useEffect Dependencies Cheatsheet
-
-For a quick rule of thumb, here's how to use the second argument of `useEffect` to control when your side effect code will run:
-
-- `useEffect(() => {})`: No dependencies array
-  - Run the side effect **every time our component renders** (whenever state or
-    props change)
-- `useEffect(() => {}, [])`: Empty dependencies array
-  - Run the side effect **only the first time our component renders**
-- `useEffect(() => {}, [variable1, variable2])`: Dependencies array with elements in it
-  - Run the side effect **any time the variable(s) change**
-
 ## Conclusion
 
 So far, we've been working with components solely for rendering to the DOM based
 on JSX, and updating based on changes to state. It's also useful to introduce
-_side effects_ to our components so that we can interact with the world outside
+**side effects** to our components so that we can interact with the world outside
 of the React DOM tree and do things like making network requests or setting
 timers.
 

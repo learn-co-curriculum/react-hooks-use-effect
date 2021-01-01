@@ -9,7 +9,7 @@ function Clock() {
     }, 1000);
   }, []);
 
-  return <div>{time}</div>;
+  return <div>{time.toString()}</div>;
 }
 
 export default Clock;
