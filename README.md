@@ -1,4 +1,4 @@
-# React Side Effects
+# The useEffect Hook
 
 ## Overview
 
@@ -55,7 +55,7 @@ in addition to its main job of returning JSX. For example, we might want to:
 In order to handle these kinds of side effects within our components, we'll need
 to use another special **hook** from React: `useEffect`.
 
-## The useEffect Hook
+## Using the useEffect Hook
 
 To use the `useEffect` hook, we must first import it:
 
@@ -63,8 +63,8 @@ To use the `useEffect` hook, we must first import it:
 import React, { useEffect } from "react";
 ```
 
-Then, inside our component, we call `useEffect` and pass in a callback function
-to run as a **side effect**:
+Then, inside our component, we call `useEffect` and pass in a **callback
+function** to run as a **side effect**:
 
 ```js
 function App() {
@@ -139,16 +139,53 @@ messages in the same order:
 **By default, `useEffect` will run our side effect function every time the
 component re-renders**.
 
-However, sometimes we only want to run our side effect once. For example:
-imagine we're using the `useEffect` hook to fetch some data from an external API
-(a common use case for `useEffect`). We don't want to make a network request
-every time our component is updated, only the first time our component renders.
-How can we control when `useEffect` will run our side effect function?
+```txt
+render -> useEffect
+```
 
 ## useEffect Dependencies
 
+Sometimes we only want to run our side effect in certain conditions. For
+example: imagine we're using the `useEffect` hook to fetch some data from an
+external API (a common use case for `useEffect`). We don't want to make a
+network request every time our component is updated, only the first time our
+component renders. If we write a component that does just that, we'll see an
+issue:
+
+```js
+function DogPics() {
+  const [images, setImages] = useState([]);
+
+  useEffect(() => {
+    fetch("https://dog.ceo/api/breeds/image/random/3")
+      .then((r) => r.json())
+      .then((data) => {
+        setImages(data.messages);
+      });
+  });
+
+  return (
+    <div>
+      {images.map((image) => (
+        <img src={image} key={image} />
+      ))}
+    </div>
+  );
+}
+```
+
+Running this code will result in an endless loop of `fetch` requests (until the
+API kicks us out for hitting the rate limit 👀). We'd end up in a cycle like this:
+
+```txt
+render -> useEffect -> setImages -> render -> useEffect -> setImages -> render -> etc...
+```
+
+How can we control when `useEffect` will run our side effect function?
+
 React gives us a way to control when the side effect will run, by passing a
-second argument to `useEffect` of a **dependencies array**. It looks like this:
+second argument to `useEffect` of a **dependencies array**. In our `App`
+component, it looks like this:
 
 ```js
 useEffect(
@@ -159,10 +196,10 @@ useEffect(
 );
 ```
 
-Update the `useEffect` function as above and try running the code again. Now,
-the side effect will only run when the `count` variable changes. We won't see
-any console messages from `useEffect` when typing in the input &mdash; we'll
-only see them when clicking the button!
+Update the `useEffect` function in `App` as above and try running the code
+again. Now, the side effect will only run when the `count` variable changes. We
+won't see any console messages from `useEffect` when typing in the input &mdash;
+we'll only see them when clicking the button!
 
 We can also pass in an _empty_ array of dependencies as a second argument, like
 this:
@@ -173,13 +210,30 @@ useEffect(() => {
 }, []); // second argument is an empty array
 ```
 
-Now, the side effect will only run the _first time_ our component renders! Keep
-this trick in mind. We'll be using it again soon to work with fetching data.
+Now, the side effect will only run the _first time_ our component renders! That same
+approach can be used to fix the infinite loop we saw in the fetch example as well:
+
+```js
+useEffect(() => {
+  fetch("https://dog.ceo/api/breeds/image/random/3")
+    .then((r) => r.json())
+    .then((data) => {
+      setImages(data.messages);
+    });
+}, []);
+```
+
+In this example, our component rendering cycle now looks like this:
+
+```txt
+render -> useEffect -> setImages -> render
+```
 
 ## Performing Side Effects
 
-Running a `console.log` isn't the most interesting side effect, so let's try a
-couple other examples.
+Running a `fetch` request as a side effect is one great example of when you'd
+use the `useEffect` and we'll explore that more in detail in the coming lessons.
+For now, let's a couple other examples where you might use the `useEffect` hook.
 
 One kind of side effect we can demonstrate here is _updating parts of the
 webpage page outside of the React DOM tree_. React is responsible for all the
@@ -271,90 +325,6 @@ when your side effect code will run:
 - `useEffect(() => {}, [variable1, variable2])`: Dependencies array with elements in it
   - Run the side effect **any time the variable(s) change**
 
-## useEffect Cleanup
-
-When using the `useEffect` hook in a component, you might end up with some
-long-running code that you no longer need once the component is removed from
-the page. Here's an example of a component that runs a timer in the background
-continuously:
-
-```js
-function Clock() {
-  const [time, setTime] = useState(new Date());
-
-  useEffect(() => {
-    setInterval(() => {
-      setTime(new Date());
-    }, 1000);
-  }, []);
-
-  return <div>{time.toString()}</div>;
-}
-```
-
-When the component first renders, the `useEffect` hook will run and create an
-interval. That interval will run every 1 second in the background, and set the
-time.
-
-We could use this Clock component like so:
-
-```js
-function App() {
-  const [showClock, setShowClock] = useState(true);
-
-  return (
-    <div>
-      {showClock ? <Clock /> : null}
-      <button onClick={() => setShowClock(false)}>Hide Clock</button>
-    </div>
-  );
-}
-```
-
-When the button is clicked, we want to hide the clock. That _also_ means
-we should stop the `setInterval` from running in the background. We need
-some way of cleaning up our side effect when the component is no longer
-needed! To demonstrate the issue, try clicking the "Hide Clock" button &mdash;
-you'll likely see a warning message like this:
-
-```txt
-index.js:1 Warning: Can't perform a React state update on an unmounted
-component. This is a no-op, but it indicates a memory leak in your application.
-To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup
-function.
-```
-
-The reason for this message is that even after removing our `Clock` component
-from the DOM, the `setInterval` function we called in `useEffect` is still
-running in the background, and updating state every second.
-
-React's solution is to have our `useEffect` function **return a cleanup
-function**, which will run after the component "un-mounts": when it is removed
-from the DOM. Here's how the cleanup function would look:
-
-```js
-function Clock() {
-  const [time, setTime] = useState(new Date());
-
-  useEffect(() => {
-    const timerID = setInterval(() => {
-      setTime(new Date());
-    }, 1000);
-
-    // returning a cleanup function
-    return function () {
-      clearInterval(timerID);
-    };
-  }, []);
-
-  return <div>{time.toString()}</div>;
-}
-```
-
-Cleanup functions like this are useful if you have a long-running function, such
-as a timer, or a subscription to a web socket, that you want to unsubscribe from
-when the component is no longer on the page.
-
 ## Conclusion
 
 So far, we've been working with components solely for rendering to the DOM based
@@ -362,9 +332,6 @@ on JSX, and updating based on changes to state. It's also useful to introduce
 **side effects** to our components so that we can interact with the world outside
 of the React DOM tree and do things like making network requests or setting
 timers.
-
-In the next lessons, we'll see some more practical uses for `useEffect` and get
-practice handling network requests from our components.
 
 ## Resources
 
