@@ -19,7 +19,7 @@ components:
 
 - A **component** is a function that takes in **props** and returns **JSX**
 - When we call `ReactDOM.render` and pass in our components, it will **render**
-  all of our components by calling the our component functions, passing down
+  all of our components by calling our component functions, passing down
   props, and building the DOM elements out of our components' JSX
 - When a component's **state** is updated by calling the `setState` function,
   that component will **re-render**, along with all of its children
