@@ -1,16 +1,16 @@
 # The useEffect Hook
 
+## Learning Goals
+
+- Understand side effects in programming
+- Use the `useEffect` hook to write side effects in components
+- Control when the side effects run by using a dependencies array with `useEffect`
+
 ## Overview
 
-We'll talk about how to use side-effects in our function components with the
-`useEffect` hook, and how to get additional functionality in our components
-beyond just returning JSX elements.
-
-## Objectives
-
-1. Understand side effects in programming
-2. Use the `useEffect` hook to write side effects in components
-3. Control when the side effects run by using a dependencies array with `useEffect`
+In this lesson, we'll talk about how to use **side-effects** in our function
+components with the `useEffect` hook, and how to run additional code in our
+components that isn't triggered by a user event, like clicking a button.
 
 ## Reviewing What We Know
 
@@ -21,12 +21,13 @@ components:
 - When we call `ReactDOM.render` and pass in our components, it will **render**
   all of our components by calling our component functions, passing down
   props, and building the DOM elements out of our components' JSX
-- When a component's **state** is updated by calling the `setState` function,
-  that component will **re-render**, along with all of its children
+- When a React's **state** is updated by calling the `setState` function, React
+  will **re-render** the component, along with all of its children
 
 ## Side Effects
 
-In programming terms, a side effect is defined as:
+In programming terms, we can think about functions as being primarily useful for
+their return values or their **side effects**:
 
 > an operation, function or expression is said to have a side effect if it
 > modifies some state variable value(s) outside its local environment, that is
@@ -50,7 +51,7 @@ in addition to its main job of returning JSX. For example, we might want to:
 - Fetch some data from an API when a component loads
 - Start or stop a timer
 - Manually change the DOM
-- Get the user's location
+- Subscribe to a chat service
 
 In order to handle these kinds of side effects within our components, we'll need
 to use another special **hook** from React: `useEffect`.
@@ -96,11 +97,12 @@ So we are now able to run some extra code as a **side effect** any time our
 component is rendered.
 
 > By using this Hook, you tell React that your component needs to do something
-> after render. React will remember the function you passed (we’ll refer to it
-> as our “effect”), and call it later after performing the DOM updates. &mdash; > [React docs on the useEffect hook][use-effect-hook]
+> after render. React will remember the function you passed (we'll refer to it
+> as our "effect"), and call it later after performing the DOM updates.
+> &mdash; [React docs on the useEffect hook][use-effect-hook]
 
-Let's add some state into the equation, and see how that interacts with our
-`useEffect` hook.
+Let's add some state into the equation, and see how re-rendering the component
+by updating state interacts with our `useEffect` hook:
 
 ```js
 function App() {
@@ -140,7 +142,7 @@ messages in the same order:
 component re-renders**.
 
 ```txt
-render -> useEffect
+render -> useEffect -> setState -> re-render -> useEffect
 ```
 
 ## useEffect Dependencies
@@ -149,8 +151,10 @@ Sometimes we only want to run our side effect in certain conditions. For
 example: imagine we're using the `useEffect` hook to fetch some data from an
 external API (a common use case for `useEffect`). We don't want to make a
 network request every time our component is updated, only the first time our
-component renders. If we write a component that does just that, we'll see an
-issue:
+component renders.
+
+If we write a component that updates state from inside the `useEffect` callback,
+we'll see an issue:
 
 ```js
 function DogPics() {
@@ -160,6 +164,7 @@ function DogPics() {
     fetch("https://dog.ceo/api/breeds/image/random/3")
       .then((r) => r.json())
       .then((data) => {
+        // setting state in the useEffect callback
         setImages(data.messages);
       });
   });
@@ -175,15 +180,16 @@ function DogPics() {
 ```
 
 Running this code will result in an endless loop of `fetch` requests (until the
-API kicks us out for hitting the rate limit 👀). We'd end up in a cycle like this:
+API kicks us out for hitting the rate limit 👀). We'd end up in a cycle like
+this:
 
 ```txt
 render -> useEffect -> setImages -> render -> useEffect -> setImages -> render -> etc...
 ```
 
-How can we control when `useEffect` will run our side effect function?
+So how can we control when `useEffect` will run our side effect function?
 
-React gives us a way to control when the side effect will run, by passing a
+React gives us a way to control when the side effect will run by passing a
 second argument to `useEffect` of a **dependencies array**. In our `App`
 component, it looks like this:
 
@@ -210,8 +216,9 @@ useEffect(() => {
 }, []); // second argument is an empty array
 ```
 
-Now, the side effect will only run the _first time_ our component renders! That same
-approach can be used to fix the infinite loop we saw in the fetch example as well:
+Now, the side effect will only run the _first time_ our component renders! That
+same approach can be used to fix the infinite loop we saw in the fetch example
+as well:
 
 ```js
 useEffect(() => {
@@ -241,7 +248,7 @@ DOM elements rendered by our components, but there are some parts of the webpage
 that live outside of this tree. Take, for instance, the `<title>` of our page
 &mdash; this is what shows up in the browser tab, like this:
 
-![title](https://raw.githubusercontent.com/learn-co-curriculum/react-hooks-use-effect/master/images/title.png)
+![title](https://curriculum-content.s3.amazonaws.com/phase-2/react-hooks-use-effect/title.png)
 
 Updating this part of the page would be considered a _side effect_, so let's use
 `useEffect` to update it!
@@ -324,6 +331,10 @@ when your side effect code will run:
   - Run the side effect **only the first time our component renders**
 - `useEffect(() => {}, [variable1, variable2])`: Dependencies array with elements in it
   - Run the side effect **any time the variable(s) change**
+
+Or, to put it another way:
+
+![Ryan Florence useEffect tweet](https://curriculum-content.s3.amazonaws.com/phase-2/react-hooks-use-effect/use-effect-state.png)
 
 ## Conclusion
 
