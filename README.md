@@ -21,8 +21,8 @@ components:
 - When we call `ReactDOM.render` and pass in our components, it will **render**
   all of our components by calling our component functions, passing down
   props, and building the DOM elements out of our components' JSX
-- When a React's **state** is updated by calling the `setState` function, React
-  will **re-render** the component, along with all of its children
+- When a React app's **state** is updated by calling the `setState` function,
+  React will **re-render** the component, along with all of its children
 
 ## Side Effects
 
