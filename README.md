@@ -165,7 +165,7 @@ function DogPics() {
       .then((r) => r.json())
       .then((data) => {
         // setting state in the useEffect callback
-        setImages(data.messages);
+        setImages(data.message);
       });
   });
 
@@ -225,7 +225,7 @@ useEffect(() => {
   fetch("https://dog.ceo/api/breeds/image/random/3")
     .then((r) => r.json())
     .then((data) => {
-      setImages(data.messages);
+      setImages(data.message);
     });
 }, []);
 ```
