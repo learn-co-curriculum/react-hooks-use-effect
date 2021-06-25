@@ -240,7 +240,7 @@ render -> useEffect -> setImages -> render
 
 Running a `fetch` request as a side effect is one great example of when you'd
 use the `useEffect` and we'll explore that more in detail in the coming lessons.
-For now, let's a couple other examples where you might use the `useEffect` hook.
+For now, let's take a look at couple of other examples where you might use the `useEffect` hook.
 
 One kind of side effect we can demonstrate here is _updating parts of the
 webpage page outside of the React DOM tree_. React is responsible for all the
