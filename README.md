@@ -243,7 +243,7 @@ use the `useEffect` and we'll explore that more in detail in the coming lessons.
 For now, let's take a look at couple of other examples where you might use the `useEffect` hook.
 
 One kind of side effect we can demonstrate here is _updating parts of the
-webpage page outside of the React DOM tree_. React is responsible for all the
+webpage outside of the React DOM tree_. React is responsible for all the
 DOM elements rendered by our components, but there are some parts of the webpage
 that live outside of this tree. Take, for instance, the `<title>` of our page
 &mdash; this is what shows up in the browser tab, like this:
