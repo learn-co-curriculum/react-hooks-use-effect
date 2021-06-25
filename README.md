@@ -41,7 +41,7 @@ database, writing to the file system, etc. are common examples of side effects
 in programming.
 
 In terms of a React component, the **main effect** of the component is to return
-some JSX. That's been true of all of the components we've been working with! One
+some JSX. That's been true with all of the components we've been working with! One
 of the first rules we learned about function components is that they take in
 props, and return JSX.
 
