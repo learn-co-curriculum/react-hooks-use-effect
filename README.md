@@ -41,7 +41,7 @@ database, writing to the file system, etc. are common examples of side effects
 in programming.
 
 In terms of a React component, the **main effect** of the component is to return
-some JSX. That's been true of all of the components we've been working with! One
+some JSX. That's been true with all of the components we've been working with! One
 of the first rules we learned about function components is that they take in
 props, and return JSX.
 
@@ -240,10 +240,10 @@ render -> useEffect -> setImages -> render
 
 Running a `fetch` request as a side effect is one great example of when you'd
 use the `useEffect` and we'll explore that more in detail in the coming lessons.
-For now, let's a couple other examples where you might use the `useEffect` hook.
+For now, let's take a look at couple of other examples where you might use the `useEffect` hook.
 
 One kind of side effect we can demonstrate here is _updating parts of the
-webpage page outside of the React DOM tree_. React is responsible for all the
+webpage outside of the React DOM tree_. React is responsible for all the
 DOM elements rendered by our components, but there are some parts of the webpage
 that live outside of this tree. Take, for instance, the `<title>` of our page
 &mdash; this is what shows up in the browser tab, like this:
