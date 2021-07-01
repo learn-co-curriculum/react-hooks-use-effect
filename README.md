@@ -32,7 +32,7 @@ their return values or their **side effects**:
 > an operation, function or expression is said to have a side effect if it
 > modifies some state variable value(s) outside its local environment, that is
 > to say has an observable effect besides returning a value (the main effect) to
-> the invoker of the operation. &mdash; [Wikipedia on Side Effects][side-effects]
+> the invoker of the operation. — [Wikipedia on Side Effects][side-effects]
 
 Put more simply, if we call a function and that function causes change in our
 application _outside of the function itself_, it's considered to have caused a
@@ -99,7 +99,7 @@ component is rendered.
 > By using this Hook, you tell React that your component needs to do something
 > after render. React will remember the function you passed (we'll refer to it
 > as our "effect"), and call it later after performing the DOM updates.
-> &mdash; [React docs on the useEffect hook][use-effect-hook]
+> — [React docs on the useEffect hook][use-effect-hook]
 
 Let's add some state into the equation, and see how re-rendering the component
 by updating state interacts with our `useEffect` hook:
@@ -204,7 +204,7 @@ useEffect(
 
 Update the `useEffect` function in `App` as above and try running the code
 again. Now, the side effect will only run when the `count` variable changes. We
-won't see any console messages from `useEffect` when typing in the input &mdash;
+won't see any console messages from `useEffect` when typing in the input —
 we'll only see them when clicking the button!
 
 We can also pass in an _empty_ array of dependencies as a second argument, like
@@ -240,13 +240,14 @@ render -> useEffect -> setImages -> render
 
 Running a `fetch` request as a side effect is one great example of when you'd
 use the `useEffect` and we'll explore that more in detail in the coming lessons.
-For now, let's take a look at couple of other examples where you might use the `useEffect` hook.
+For now, let's take a look at a couple of other examples where you might use the
+`useEffect` hook.
 
 One kind of side effect we can demonstrate here is _updating parts of the
 webpage outside of the React DOM tree_. React is responsible for all the
 DOM elements rendered by our components, but there are some parts of the webpage
 that live outside of this tree. Take, for instance, the `<title>` of our page
-&mdash; this is what shows up in the browser tab, like this:
+— this is what shows up in the browser tab, like this:
 
 ![title](https://curriculum-content.s3.amazonaws.com/phase-2/react-hooks-use-effect/title.png)
 
