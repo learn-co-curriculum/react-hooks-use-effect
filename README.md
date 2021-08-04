@@ -60,14 +60,14 @@ to use another special **hook** from React: `useEffect`.
 
 To use the `useEffect` hook, we must first import it:
 
-```js
+```jsx
 import React, { useEffect } from "react";
 ```
 
 Then, inside our component, we call `useEffect` and pass in a **callback
 function** to run as a **side effect**:
 
-```js
+```jsx
 function App() {
   useEffect(
     // side effect function
@@ -104,7 +104,7 @@ component is rendered.
 Let's add some state into the equation, and see how re-rendering the component
 by updating state interacts with our `useEffect` hook:
 
-```js
+```jsx
 function App() {
   const [count, setCount] = useState(0);
   const [text, setText] = useState("");
@@ -156,7 +156,7 @@ component renders.
 If we write a component that updates state from inside the `useEffect` callback,
 we'll see an issue:
 
-```js
+```jsx
 function DogPics() {
   const [images, setImages] = useState([]);
 
@@ -193,7 +193,7 @@ React gives us a way to control when the side effect will run by passing a
 second argument to `useEffect` of a **dependencies array**. In our `App`
 component, it looks like this:
 
-```js
+```jsx
 useEffect(
   // 1st arg: side effect (callback function)
   () => console.log("useEffect called"),
@@ -210,7 +210,7 @@ we'll only see them when clicking the button!
 We can also pass in an _empty_ array of dependencies as a second argument, like
 this:
 
-```js
+```jsx
 useEffect(() => {
   console.log("useEffect called");
 }, []); // second argument is an empty array
@@ -220,7 +220,7 @@ Now, the side effect will only run the _first time_ our component renders! That
 same approach can be used to fix the infinite loop we saw in the fetch example
 as well:
 
-```js
+```jsx
 useEffect(() => {
   fetch("https://dog.ceo/api/breeds/image/random/3")
     .then((r) => r.json())
@@ -254,7 +254,7 @@ that live outside of this tree. Take, for instance, the `<title>` of our page
 Updating this part of the page would be considered a _side effect_, so let's use
 `useEffect` to update it!
 
-```js
+```jsx
 useEffect(() => {
   document.title = text;
 }, [text]);
@@ -270,7 +270,7 @@ want this function to _reset_ the `count` variable back to 0 after 5 seconds.
 Running a `setTimeout` is another example of a side effect, so once again, let's
 use `useEffect`:
 
-```js
+```jsx
 useEffect(() => {
   setTimeout(() => setCount(0), 5000);
 }, []);
@@ -285,7 +285,7 @@ running every time my component updates. kthxbye!"
 
 All together, here's what our updated component looks like:
 
-```js
+```jsx
 function App() {
   const [count, setCount] = useState(0);
   const [text, setText] = useState("");
