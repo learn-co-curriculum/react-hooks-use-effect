@@ -6,11 +6,11 @@
 - Use the `useEffect` hook to write side effects in components
 - Control when the side effects run by using a dependencies array with `useEffect`
 
-## Overview
+## Introduction
 
-In this lesson, we'll talk about how to use **side-effects** in our function
+In this lesson, we'll talk about how to use **side effects** in our function
 components with the `useEffect` hook, and how to run additional code in our
-components that isn't triggered by a user event, like clicking a button.
+components that isn't triggered by a user event such as clicking a button.
 
 ## Reviewing What We Know
 
@@ -26,8 +26,8 @@ components:
 
 ## Side Effects
 
-In programming terms, we can think about functions as being primarily useful for
-their return values or their **side effects**:
+When we think about the functionality of a function, we generally think about
+its return value. However, functions can also have **side effects**:
 
 > an operation, function or expression is said to have a side effect if it
 > modifies some state variable value(s) outside its local environment, that is
@@ -190,8 +190,8 @@ render -> useEffect -> setImages -> render -> useEffect -> setImages -> render -
 So how can we control when `useEffect` will run our side effect function?
 
 React gives us a way to control when the side effect will run by passing a
-second argument to `useEffect` of a **dependencies array**. In our `App`
-component, it looks like this:
+second argument to `useEffect` of a **dependencies array**. Let's set that up in
+our `App` component:
 
 ```jsx
 useEffect(
@@ -202,10 +202,9 @@ useEffect(
 );
 ```
 
-Update the `useEffect` function in `App` as above and try running the code
-again. Now, the side effect will only run when the `count` variable changes. We
-won't see any console messages from `useEffect` when typing in the input —
-we'll only see them when clicking the button!
+Now, if you try running the code again, the side effect will only run when the
+`count` variable changes. We won't see any console messages from `useEffect`
+when typing in the input — we'll only see them when clicking the button!
 
 We can also pass in an _empty_ array of dependencies as a second argument, like
 this:
@@ -239,9 +238,9 @@ render -> useEffect -> setImages -> render
 ## Performing Side Effects
 
 Running a `fetch` request as a side effect is one great example of when you'd
-use the `useEffect` and we'll explore that more in detail in the coming lessons.
-For now, let's take a look at a couple of other examples where you might use the
-`useEffect` hook.
+use the `useEffect` hook and we'll explore that in more detail in the coming
+lessons. For now, let's take a look at a couple of other examples where you
+might use the `useEffect` hook.
 
 One kind of side effect we can demonstrate here is _updating parts of the
 webpage outside of the React DOM tree_. React is responsible for all the
