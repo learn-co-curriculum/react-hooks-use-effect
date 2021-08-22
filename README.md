@@ -190,7 +190,7 @@ render -> useEffect -> setImages -> render -> useEffect -> setImages -> render -
 So how can we control when `useEffect` will run our side effect function?
 
 React gives us a way to control when the side effect will run by passing a
-second argument to `useEffect` of a **dependencies array**. Let's set that up in
+second argument to `useEffect`, a **dependencies array**. Let's set that up in
 our `App` component:
 
 ```jsx
